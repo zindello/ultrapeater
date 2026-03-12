@@ -103,4 +103,4 @@ systemctl enable pymc-repeater
 systemctl start pymc-repeater
 
 echo "Clean up install files"
-rf -rf $PYMC_SCRIPT_DIR
+rm -rf $PYMC_SCRIPT_DIR
