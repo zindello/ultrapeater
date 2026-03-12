@@ -65,11 +65,13 @@ MACAddress=$mac
 DHCP=yes
 EOF
 
-echo "#### NOTE IP AND SSH IDENTITY WILL CHANGE ON RESTART ####"
-
 systemctl disable NetworkManager
 systemctl disable NetworkManager-dispatcher
 systemctl disable NetworkManager-wait-online
 systemctl enable systemd-networkd
+
+echo ""
+echo "### SYSTEM CONFIG COMPLETE ###"
+echo "#### NOTE IP AND SSH IDENTITY WILL CHANGE ON RESTART ####"
 
 reboot

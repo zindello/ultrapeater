@@ -14,7 +14,11 @@ The software has been confirmed to work on both the cheaper "B" and regular vari
 
 Once you have purchased your UltraPeater and your LuckFox (AliExpress is often the best) you'll need to flash it with the LuckFox Ubuntu Image, instructions at the URL below:
 
-Once flashed, you will need to login to your router and obtain the IP address of the LuckFox. The hostname will show up as "luckfox". Login via ssh, user: pico | password: luckfox
+Once flashed, you will need to login to your router and obtain the IP address of the LuckFox. The hostname will show up as "luckfox". Login via ssh, user: pico | password: luckfox.  
+
+The IP address and ssh identity WILL change after you clone this repo and run the first script, so I suggest logging in with the following SSH options:
+
+``` ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null pico@<ip_to_device> ```
 
 I suggest you change the password once logged in using the "passwd" command.
 
@@ -24,7 +28,7 @@ https://wiki.luckfox.com/Luckfox-Pico-Ultra/Flash-image
 
 ## Software Installation
 
-Once logged in, download this repo to the pico home director
+Once logged in, download this repo to the pico home directory using the following command.
 
 ``` pico@luckfox:~$ git clone https://github.com/zindello/ultrapeater.git ```
 
@@ -41,26 +45,36 @@ Disable a whole heap of unneeded services (These could probably be uninstalled).
 Disable NetworkManager (It's bloat and you don't need it anyway).  
 Configure a static mac address for the device.  
 Enable systemd-networkd (Much lighter network management option)
-Reboot the system.
+Reboot the system.  
+
+This script will run relatively quickly, with a short pause during the ssk key regeneration.
 
 ### NOTE: The system's IP address WILL change at this point and you will have to get the new address out of the router.
 
-``` sudo bash 02-luckfox-system-update.sh ```
+``` pico@luckfox:~$ sudo bash ultrapeater/scripts/02-luckfox-system-update.sh ```
 
 This script will:  
 Update the apt caches.  
 Update the system with the latest packages.  
 Upgrade python to 3.10.  
 Configure a GPIO group and set the permissions.  
-Configure the GPIO pins for the correct functions needed for the UltraPeater.   
+Configure the GPIO pins for the correct functions needed for the UltraPeater.  
 
-``` sudo bash 03-install-pymc-repeater.sh ```
+This script will take a little longer to run - it's updating all of the out of date packages on the LuckFox Ubuntu image.  
+
+``` pico@luckfox:~$ sudo bash ultrapeater/scripts/03-install-pymc-repeater.sh ```
 
 This script will install pyMC_Repeater and setup the service.
 
-``` sudo bash 04-install-pymc-console.sh ```
+This script will take the longest to run - it's installing off of the Python dependencies and building all of the parts that are needed to support pyMC_Repeater - you might want to make a coffee while this one runs.  
+
+``` pico@luckfox:~$ sudo bash ultrapeater/scripts/04-install-pymc-console.sh ```
 
 This script will install pyMC_Console (An alternative, more feature rich console, switchable via the UI)
+
+This script won't take long to run at all.  
+
+## Login
 
 Once the installation is complete, you can login to the pyMC Repeater console on https://<Your Ultrapeater IP>:5000/ and configure the system. In the "Board Setup" page, please select the UltraPeater board that matches your purchase.
 
