@@ -26,11 +26,11 @@ https://wiki.luckfox.com/Luckfox-Pico-Ultra/Flash-image
 
 Once logged in, download this repo to the pico home director
 
-sudo apt install -y git && git clone https://github.com/zindello/ultrapeater.git
+``` pico@luckfox:~$ git clone https://github.com/zindello/ultrapeater.git ```
 
 Change into the ultrapeater/scripts folder. There are four scripts to run. They need to be run with sudo
 
-``` sudo bash 01-luckfox-system-config.sh ```
+``` pico@luckfox:~$ sudo bash ultrapeater/scripts/01-luckfox-system-config.sh ```
 
 This script will:  
 Disable the default RGB display GPIO configuation.  
