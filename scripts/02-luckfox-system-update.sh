@@ -18,22 +18,18 @@ python3 -m pip install --upgrade pip
 python3 -m pip install setuptools_scm yq
 
 echo "Adding GPIO user and fixing gpiochip permissions"
-sudo groupadd gpio
-sudo usermod -aG gpio pico
-sudo chgrp gpio /dev/gpiochip*
-sudo chmod 660 /dev/gpiochip*
+groupadd gpio
+usermod -aG gpio pico
+chgrp gpio /dev/gpiochip*
+chmod 660 /dev/gpiochip*
 
-cat <<EOF >/etc/luckfox.cfg
-RGB_ENABLE=0
-SPI0_M0_STATUS=1
-SPI0_M0_MISO_ENABLE=1
-SPI0_M0_SPEED=1000000
-SPI0_M0_CS_ENABLE=0
-SPI0_M0_MODE=1
-UART2_M1_STATUS=0
-UART4_M0_STATUS=0
-I2C4_M1_STATUS=0
-I2C4_M1_SPEED=0
-EOF
+echo "Adding chgrp to rc.local - hacky but it works"
+echo "chgrp gpio /dev/gpiochip*" >> /etc/rc.local
+echo "chmod 660 /dev/gpiochip*" >> /etc/rc.local
+
+echo "Disabling the UARTS we need for GPIO and enabling SPI"
+luckfox-config uart_disable 4 1
+luckfox-config uart_disable 2 1
+luckfox-config spi_enable
 
 reboot

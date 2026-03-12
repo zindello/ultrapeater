@@ -6,12 +6,13 @@ PYMC_CONFIG_DIR="/etc/pymc_repeater"
 PYMC_LOG_DIR="/var/log/pymc_repeater"
 PYMC_SERVICE_USER="repeater"
 PYMC_SERVICE_NAME="pymc-repeater"
-
-echo "# Creating directories..."
-mkdir -p "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" /var/lib/pymc_repeater
+PYMC_SERVICE_USER_HOME="/var/lib/pymc_repeater"
+PYMC_REPO_URL="https://github.com/rightup/pyMC_Repeater.git"
+PYMC_REPO_BRANCH="feat/companion"
+PYMC_CONFIG_FILE="/etc/pymc_repeater/config.yaml"
 
 echo "# Creating service user..."
-useradd --system --home /var/lib/pymc_repeater --shell /sbin/nologin "$PYMC_SERVICE_USER"
+useradd --system --home $PYMC_SERVICE_USER_HOME --shell /sbin/nologin "$PYMC_SERVICE_USER"
 
 echo "# Adding user to hardware groups..."
 usermod -a -G gpio "$PYMC_SERVICE_USER" 2>/dev/null || true
@@ -22,8 +23,11 @@ rm -rf "$PYMC_INSTALL_DIR" 2>/dev/null || true
 rm -rf "$PYMC_SCRIPT_DIR" 2>/dev/null || true
 rm -rf "$PYMC_CONFIG_DIR" 2>/dev/null || true
 
+echo "# Creating directories..."
+mkdir -p "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" $PYMC_SERVICE_USER_HOME
+
 echo "# clone pyMC Repeater"
-git clone --single-branch --branch feat/companion https://github.com/rightup/pyMC_Repeater.git $PYMC_SCRIPT_DIR
+git clone --single-branch --branch $PYMC_REPO_BRANCH $PYMC_REPO_URL $PYMC_SCRIPT_DIR
 cd $PYMC_SCRIPT_DIR
 
 echo "# Generating version file..."
@@ -43,8 +47,8 @@ cp "$PYMC_SCRIPT_DIR/pyproject.toml" "$PYMC_INSTALL_DIR/"
 cp "$PYMC_SCRIPT_DIR/README.md" "$PYMC_INSTALL_DIR/"
 cp "$PYMC_SCRIPT_DIR/manage.sh" "$PYMC_INSTALL_DIR/" 2>/dev/null || true
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" "$PYMC_INSTALL_DIR/" 2>/dev/null || true
-cp "$PYMC_SCRIPT_DIR/radio-settings.json" /var/lib/pymc_repeater/ 2>/dev/null || true
-cp "$PYMC_SCRIPT_DIR/radio-presets.json" /var/lib/pymc_repeater/ 2>/dev/null || true
+cp "$PYMC_SCRIPT_DIR/radio-settings.json" $PYMC_SERVICE_USER_HOME 2>/dev/null || true
+cp "$PYMC_SCRIPT_DIR/radio-presets.json" $PYMC_SERVICE_USER_HOME 2>/dev/null || true
 
 echo "# Installing configuration..."
 cp "$PYMC_SCRIPT_DIR/config.yaml.example" "$PYMC_CONFIG_DIR/config.yaml.example"
@@ -52,14 +56,18 @@ if [ ! -f "$PYMC_CONFIG_DIR/config.yaml" ]; then
     cp "$PYMC_SCRIPT_DIR/config.yaml.example" "$PYMC_CONFIG_DIR/config.yaml"
 fi
 
+echo "# Enable GPIOd to prevent errors on first start"
+sed -i "/^  cs_pin:.*/a\\  gpio_chip: 1" "$PYMC_CONFIG_FILE"
+sed -i "/^  gpio_chip:.*/a\\  use_gpiod_backend: true" "$PYMC_CONFIG_FILE"
+
 echo "# Setting permissions..."
-chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" /var/lib/pymc_repeater
-chmod 750 "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" /var/lib/pymc_repeater
+chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" "$PYMC_SERVICE_USER_HOME"
+chmod 750 "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" $PYMC_SERVICE_USER_HOME
 # Ensure the service user can create subdirectories in their home directory
-chmod 755 /var/lib/pymc_repeater
+chmod 755 $PYMC_SERVICE_USER_HOME
 # Pre-create the .config directory that the service will need
-mkdir -p /var/lib/pymc_repeater/.config/pymc_repeater
-chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" /var/lib/pymc_repeater/.config
+mkdir -p $PYMC_SERVICE_USER_HOME/.config/pymc_repeater
+chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" $PYMC_SERVICE_USER_HOME/.config
 
 echo "# Installing dependencies and pyMC_Repeater"
 
@@ -76,7 +84,7 @@ else
     export SETUPTOOLS_SCM_PRETEND_VERSION="1.0.5"
 fi
 
-python3 -m pip install --force-reinstall --no-cache-dir .
+python3 -m pip install --break-system-packages --force-reinstall --no-cache-dir .
 
 echo "Setting hostname to ultrapeater..."
 echo "ultrapeater" > /etc/hostname
