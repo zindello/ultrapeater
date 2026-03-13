@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 PYMC_SCRIPT_DIR="/tmp/pymc_repeater_install"
 PYMC_INSTALL_DIR="/opt/pymc_repeater"
 PYMC_CONFIG_DIR="/etc/pymc_repeater"
@@ -31,7 +33,6 @@ git clone --single-branch --branch $PYMC_REPO_BRANCH $PYMC_REPO_URL $PYMC_SCRIPT
 cd $PYMC_SCRIPT_DIR
 
 echo "# Generating version file..."
-cd "$SCRIPT_DIR"
 # Generate version file using setuptools_scm before copying
 if [ -d .git ]; then
     git fetch --tags 2>/dev/null || true
@@ -47,7 +48,6 @@ cp "$PYMC_SCRIPT_DIR/pyproject.toml" "$PYMC_INSTALL_DIR/"
 cp "$PYMC_SCRIPT_DIR/README.md" "$PYMC_INSTALL_DIR/"
 cp "$PYMC_SCRIPT_DIR/manage.sh" "$PYMC_INSTALL_DIR/" 2>/dev/null || true
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" "$PYMC_INSTALL_DIR/" 2>/dev/null || true
-cp "$PYMC_SCRIPT_DIR/radio-settings.json" $PYMC_SERVICE_USER_HOME 2>/dev/null || true
 cp "$PYMC_SCRIPT_DIR/radio-presets.json" $PYMC_SERVICE_USER_HOME 2>/dev/null || true
 
 echo "# Installing configuration..."
@@ -59,6 +59,9 @@ fi
 echo "# Enable GPIOd to prevent errors on first start"
 sed -i "/^  cs_pin:.*/a\\  gpio_chip: 1" "$PYMC_CONFIG_FILE"
 sed -i "/^  gpio_chip:.*/a\\  use_gpiod_backend: true" "$PYMC_CONFIG_FILE"
+
+echo "# Copy in our BoardConfig so that you only get the options of our two variants"
+cp $SCRIPT_DIR/assets/ultrapeater-radio-settings.json $PYMC_SERVICE_USER_HOME/radio-settings-dist.json
 
 echo "# Setting permissions..."
 chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" "$PYMC_SERVICE_USER_HOME"
