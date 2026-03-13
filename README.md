@@ -85,7 +85,7 @@ This script won't take long to run at all.
 
 ## Login
 
-Once the installation is complete, you can login to the pyMC Repeater console on https://<Your Ultrapeater IP>:5000/ and configure the system. In the "Board Setup" page, please select the UltraPeater board that matches your purchase.
+Once the installation is complete, you can login to the pyMC Repeater console on https://<Your Ultrapeater IP>:8000/ and configure the system. In the "Board Setup" page, please select the UltraPeater board that matches your purchase.
 
 
 
