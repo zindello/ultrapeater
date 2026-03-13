@@ -63,7 +63,7 @@ else
     export SETUPTOOLS_SCM_PRETEND_VERSION="1.0.5"
 fi
 
-python3 -m pip install --break-system-packages --force-reinstall .
+python3 -m pip install --break-system-packages .
 
 systemctl start pymc-repeater
 
