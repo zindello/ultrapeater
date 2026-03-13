@@ -63,6 +63,8 @@ Name=eth0
 MACAddress=$mac
 [Network]
 DHCP=yes
+[DHCPv4]
+ClientIdentifier=mac
 EOF
 
 systemctl disable NetworkManager

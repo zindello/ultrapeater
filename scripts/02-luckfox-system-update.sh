@@ -22,10 +22,14 @@ groupadd gpio
 usermod -aG gpio pico
 chgrp gpio /dev/gpiochip*
 chmod 660 /dev/gpiochip*
+chgrp gpio /dev/spidev*
+chmod 660 /dev/spidev*
 
 echo "Adding chgrp to rc.local - hacky but it works"
 echo "chgrp gpio /dev/gpiochip*" >> /etc/rc.local
 echo "chmod 660 /dev/gpiochip*" >> /etc/rc.local
+echo "chgrp gpio /dev/spidev*" >> /etc/rc.local
+echo "chmod 660 /dev/spidev*" >> /etc/rc.local
 
 echo "Disabling the UARTS we need for GPIO and enabling SPI"
 luckfox-config uart_disable 4 1
