@@ -61,7 +61,7 @@ sed -i "/^  cs_pin:.*/a\\  gpio_chip: 1" "$PYMC_CONFIG_FILE"
 sed -i "/^  gpio_chip:.*/a\\  use_gpiod_backend: true" "$PYMC_CONFIG_FILE"
 
 echo "# Copy in our BoardConfig so that you only get the options of our two variants"
-cp $SCRIPT_DIR/assets/ultrapeater-radio-settings.json $PYMC_SERVICE_USER_HOME/radio-settings-dist.json
+cp $SCRIPT_DIR/assets/ultrapeater-radio-settings.json $PYMC_SERVICE_USER_HOME/radio-settings.json
 
 echo "# Setting permissions..."
 chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" "$PYMC_SERVICE_USER_HOME"
