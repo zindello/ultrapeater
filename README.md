@@ -34,6 +34,8 @@ Once logged in, download this repo to the pico home directory using the followin
 
 Change into the ultrapeater/scripts folder. There are four scripts to run. They need to be run with sudo
 
+### Script 1 01-luckfox-system-config.sh
+
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/01-luckfox-system-config.sh ```
 
 This script will:  
@@ -51,6 +53,8 @@ This script will run relatively quickly, with a short pause during the ssk key r
 
 ### NOTE: The system's IP address WILL change at this point and you will have to get the new address out of the router.
 
+### Script 2 02-luckfox-system-update.sh
+
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/02-luckfox-system-update.sh ```
 
 This script will:  
@@ -59,14 +63,19 @@ Update the system with the latest packages.
 Upgrade python to 3.10.  
 Configure a GPIO group and set the permissions.  
 Configure the GPIO pins for the correct functions needed for the UltraPeater.  
+Reboot the system
 
 This script will take a little longer to run - it's updating all of the out of date packages on the LuckFox Ubuntu image.  
+
+### Script 3 03-install-pymc-repeater.sh
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/03-install-pymc-repeater.sh ```
 
 This script will install pyMC_Repeater and setup the service.
 
 This script will take the longest to run - it's installing off of the Python dependencies and building all of the parts that are needed to support pyMC_Repeater - you might want to make a coffee while this one runs.  
+
+### Script 3 04-install-pymc-console.sh
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/04-install-pymc-console.sh ```
 
@@ -78,5 +87,10 @@ This script won't take long to run at all.
 
 Once the installation is complete, you can login to the pyMC Repeater console on https://<Your Ultrapeater IP>:5000/ and configure the system. In the "Board Setup" page, please select the UltraPeater board that matches your purchase.
 
+
+
+## Credit
+
+Credit must go to @theshaun for his work he did on the Femto, a lot of these scripts have leaned heavily into the work that he did there, as well as a lot of the general work done by @RightUp and the team on pyMC_Repeater.
 
 
