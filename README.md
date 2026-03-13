@@ -32,7 +32,7 @@ Once logged in, download this repo to the pico home directory using the followin
 
 ``` pico@luckfox:~$ git clone https://github.com/zindello/ultrapeater.git ```
 
-Change into the ultrapeater/scripts folder. There are four scripts to run. They need to be run with sudo
+There are four scripts to run. They need to be run with sudo
 
 ### Script 1 01-luckfox-system-config.sh
 
