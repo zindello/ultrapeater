@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "Disable root user password"
+passwd -l root
+
 echo "Injecting the ability to manually enable/disable the things we need to in the luckfox-config script"
 sudo sed -i '/elif \[ -z "\$1" \]; then/i \
 elif [ "$1" == "rgb_disable" ]; then\
@@ -14,6 +17,8 @@ elif [ "$1" == "spi_enable" ]; then\
     echo "SPI Enabled - Reboot for changes to take effect"\
 elif [ "$1" == "uart_disable" ]; then\
     luckfox_uart_app 0 $2 $3\
+elif [ "$1" == "uart_enable" ]; then\
+    luckfox_uart_app 1 $2 $3\
 ' /usr/bin/luckfox-config
 
 echo "Disabling RGB"
@@ -33,25 +38,23 @@ chown root:root /etc/ssh/ssh_host_*
 systemctl restart ssh
 
 echo "Disable all the services that we're not going to need"
-systemctl disable apt-daily.timer
-systemctl disable apt-daily-upgrade.timer
-systemctl mask apt-daily.service # try prevent daily updates
-systemctl mask apt-daily-upgrade.service # try prevent daily updates
-systemctl disable unattended-upgrades
-systemctl disable smbd nmbd # samba services, can be enabled via menu
-systemctl disable vsftpd.service
-systemctl disable ModemManager.service
-systemctl disable getty@tty1.service
-systemctl disable acpid
-systemctl disable acpid.socket
-systemctl disable acpid.service
-systemctl mask alsa-restore.service
-systemctl disable alsa-restore.service
-systemctl disable alsa-state.service
-systemctl mask sound.target
-systemctl disable sound.target
-systemctl disable veritysetup.target
-systemctl disable systemd-pstore.service
+systemctl disable --now acpid
+systemctl disable --now acpid.socket
+systemctl disable --now alsa-restore.service
+systemctl disable --now alsa-state.service
+systemctl disable --now adbd.service 2>/dev/null || pkill -9 adbd
+systemctl disable --now apt-daily.timer
+systemctl disable --now apt-daily-upgrade.timer
+systemctl disable --now cron.service
+systemctl disable --now luckfox_switch_rgb_resolution.service 2>/dev/null || pkill -f luckfox_switch_rgb_resolution
+systemctl disable --now ModemManager.service
+systemctl disable --now rsyslog.service
+systemctl disable --now smbd nmbd # samba services, can be enabled via menu
+systemctl disable --now sound.target
+systemctl disable --now systemd-pstore.service
+systemctl disable --now veritysetup.target
+systemctl disable --now vsftpd.service
+systemctl disable --now serial-getty@ttyFIQ0
 
 echo "Prepare the switch to networkd"
 networkfile="/etc/systemd/network/10-wired.network"
@@ -67,10 +70,92 @@ DHCP=yes
 ClientIdentifier=mac
 EOF
 
+echo "Configure systemd-networkd to take effect on next boot"
 systemctl disable NetworkManager
 systemctl disable NetworkManager-dispatcher
 systemctl disable NetworkManager-wait-online
 systemctl enable systemd-networkd
+
+echo "Update apt"
+apt update
+
+echo "Purge unneeded packages"
+apt remove -y --purge \
+ network-manager \
+ network-manager-pptp \
+ isc-dhcp-client \
+ dnsmasq-base \
+ ifupdown \
+ ppp \
+ pptp-linux \
+ vsftpd \
+ humanity-icon-theme \
+ adwaita-icon-theme \
+ at-spi2-core \
+ dconf-gsettings-backend \
+ dconf-service \
+ gsettings-desktop-schemas \
+ gtk-update-icon-cache guvcview \
+ humanity-icon-theme \
+ hicolor-icon-theme \
+ ubuntu-mono \
+ x11-common \
+ xauth \
+ xdg-user-dirs \
+ xinput \
+ xkb-data \
+ libgtk-3-0 \
+ libgtk-3-bin \
+ libgtk-3-common \
+ libx11* \
+ mesa-va-drivers \
+ mesa-vdpau-drivers \
+ va-driver-all \
+ vdpau-driver-all \
+ libwayland* \
+ fonts-dejavu-core \
+ fonts-noto-color-emoji \
+ alsa-utils \
+ alsa-topology-conf \
+ libao* \
+ sox \
+ libsox* \
+ gstreamer* \
+ libav* \
+ libv4l* \
+ uvcdynctrl* \
+ libpulse* \
+ libasound2* \
+ acpid \
+ can-utils \
+ evemu-tools \
+ evtest \
+ iperf3 \
+ modemmanager \
+ packagekit \
+ packagekit-tools \
+ tcpdump \
+ usb-modeswitch \
+ usb-modeswitch-data \
+ rsyslog
+
+apt autoremove -y --purge
+apt autoclean
+
+echo "Disable the NPU - we don't need it"
+rm /oem/usr/ko/insmod_ko.sh
+
+echo "Install u-boot-tools and configure fw_env.config"
+apt install -y u-boot-tools
+echo "Creating fw_env.config (Luckfox standard env partition)"
+cat <<EOF > /etc/fw_env.config
+/dev/mmcblk0p1  0x0  0x8000
+EOF
+echo "Configure bootargs to reduce CMA allocation to 1M (We don't need it)"
+fw_setenv sys_bootargs "`fw_printenv|grep 'sys_bootargs'|sed 's/rk_dma_heap_cma=..M/rk_dma_heap_cma=1M console=ttyS0/'|sed 's/sys_bootargs=//'`"
+
+echo "Trim the logging time to 1d"
+journalctl --vacuum-time=1d
 
 echo ""
 echo "### SYSTEM CONFIG COMPLETE ###"

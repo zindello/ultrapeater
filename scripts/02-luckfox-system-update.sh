@@ -6,8 +6,8 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
 DEBIAN_FRONTEND=noninteractive
 
-echo "Updating apt sources"
-apt update
+echo "Update packages"
+apt upgrade -y --option Dpkg::Options::="--force-confold"
 
 echo "Installing packages"
 apt install -y --option Dpkg::Options::="--force-confold" locales git libyaml-cpp-dev libbluetooth-dev openssl libssl-dev libulfius-dev fonts-noto-color-emoji ninja-build chrony software-properties-common python-is-python3 python3.10-venv lsof spi-tools vim mtd-utils jq rsync libffi-dev jq python3-pip python3-rrdtool python3.10-venv wget swig build-essential python3-dev
@@ -31,9 +31,24 @@ echo "chmod 660 /dev/gpiochip*" >> /etc/rc.local
 echo "chgrp gpio /dev/spidev*" >> /etc/rc.local
 echo "chmod 660 /dev/spidev*" >> /etc/rc.local
 
+echo "Disable TTY on UART2"
+systemctl disable serial-getty@ttyFIQ0
+
 echo "Disabling the UARTS we need for GPIO and enabling SPI"
 luckfox-config uart_disable 4 1
 luckfox-config uart_disable 2 1
+
+echo "Enabling UART0 for shell and SPI"
+luckfox-config uart_enable 0 1
 luckfox-config spi_enable
+
+#echo "Enable TTY on UART0"
+#systemctl enable serial-getty@ttyS0
+#sed -i 's/--keep-baud 115200,57600,38400,9600/115200/' /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service
+#systemctl daemon-reload
+#systemctl restart serial-getty@ttyS0
+
+echo "Finally run an apt upgrade for any packages that need/want upgrading"
+apt upgrade -y --option Dpkg::Options::="--force-confold"
 
 reboot
