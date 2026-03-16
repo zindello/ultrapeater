@@ -42,11 +42,11 @@ echo "Enabling UART0 for shell and SPI"
 luckfox-config uart_enable 0 1
 luckfox-config spi_enable
 
-echo "Enable TTY on UART0"
-systemctl enable serial-getty@ttyS0
-sed -i 's/--keep-baud 115200,57600,38400,9600/115200/' /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service
-systemctl daemon-reload
-systemctl restart serial-getting@ttyS0
+#echo "Enable TTY on UART0"
+#systemctl enable serial-getty@ttyS0
+#sed -i 's/--keep-baud 115200,57600,38400,9600/115200/' /etc/systemd/system/getty.target.wants/serial-getty@ttyS0.service
+#systemctl daemon-reload
+#systemctl restart serial-getty@ttyS0
 
 echo "Finally run an apt upgrade for any packages that need/want upgrading"
 apt upgrade -y --option Dpkg::Options::="--force-confold"
