@@ -42,10 +42,8 @@ systemctl disable --now acpid
 systemctl disable --now acpid.socket
 systemctl disable --now alsa-restore.service
 systemctl disable --now alsa-state.service
-systemctl disable --now adbd.service 2>/dev/null || pkill -9 adbd
 systemctl disable --now apt-daily.timer
 systemctl disable --now apt-daily-upgrade.timer
-systemctl disable --now cron.service
 systemctl disable --now luckfox_switch_rgb_resolution.service 2>/dev/null || pkill -f luckfox_switch_rgb_resolution
 systemctl disable --now ModemManager.service
 systemctl disable --now rsyslog.service
