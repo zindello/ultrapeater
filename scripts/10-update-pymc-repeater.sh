@@ -13,7 +13,6 @@ echo "# Cleaning old pyMC Repeater installation files..."
 # Remove old repeater directory to ensure clean install
 rm -rf "$PYMC_INSTALL_DIR" 2>/dev/null || true
 rm -rf "$PYMC_SCRIPT_DIR" 2>/dev/null || true
-rm -rf "$PYMC_CONFIG_DIR" 2>/dev/null || true
 
 echo "# clone pyMC Repeater"
 git clone --single-branch --branch feat/companion https://github.com/rightup/pyMC_Repeater.git $PYMC_SCRIPT_DIR
