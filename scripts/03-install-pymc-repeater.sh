@@ -9,7 +9,7 @@ PYMC_LOG_DIR="/var/log/pymc_repeater"
 PYMC_SERVICE_USER="repeater"
 PYMC_SERVICE_NAME="pymc-repeater"
 PYMC_SERVICE_USER_HOME="/var/lib/pymc_repeater"
-PYMC_REPO_URL="https://github.com/rightup/pyMC_Repeater.git"
+PYMC_REPO_URL="https://github.com/rightup/pyMC_Repeater.git"        
 PYMC_REPO_BRANCH="feat/companion"
 PYMC_CONFIG_FILE="/etc/pymc_repeater/config.yaml"
 
