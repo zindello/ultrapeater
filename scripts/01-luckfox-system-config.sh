@@ -148,6 +148,9 @@ rm /oem/usr/ko/insmod_ko.sh
 echo "Disable the rgb switcher starting in rc.local"
 sed -i 's/\/usr\/bin\/luckfox_switch_rgb_resolution/#\/usr\/bin\/luckfox_switch_rgb_resolution/' /etc/rc.local
 
+echo "Disable the wifi/bt script - we won't be using them"
+sed -i 's/wifibt_init &/#wifibt_init &/' /etc/rc.local
+
 echo "Install u-boot-tools and configure fw_env.config"
 apt install -y u-boot-tools
 echo "Creating fw_env.config (Luckfox standard env partition)"
