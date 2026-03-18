@@ -74,6 +74,9 @@ systemctl disable NetworkManager-dispatcher
 systemctl disable NetworkManager-wait-online
 systemctl enable systemd-networkd
 
+echo "Kill the /etc/network folder as NetworkManager isn't used anymore and systemd-networkd doesn't need it"
+rm -rf /etc/network
+
 echo "Update apt"
 apt update
 
