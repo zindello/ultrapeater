@@ -163,6 +163,23 @@ fw_setenv sys_bootargs "`fw_printenv|grep 'sys_bootargs'|sed 's/rk_dma_heap_cma=
 echo "Trim the logging time to 1d"
 journalctl --vacuum-time=1d
 
+
+echo "Replacing u-boot and kernel with version that has serial console on UART0"
+
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+echo "  Updating idblock partition - mmcblk0p2"
+dd if=$SCRIPT_DIR/assets/ttyS0/idblock.img of=/dev/mmcblk0p2
+
+echo "  Updating uboot partition - mmcblk0p3"
+dd if=$SCRIPT_DIR/assets/ttyS0/uboot.img of=/dev/mmcblk0p3
+
+echo "  Updating Linux kernel partition - mmcblk0p4"
+dd if=$SCRIPT_DIR/assets/ttyS0/boot.img of=/dev/mmcblk0p4
+
+sync
+
 echo ""
 echo "### SYSTEM CONFIG COMPLETE ###"
 echo "#### NOTE IP AND SSH IDENTITY WILL CHANGE ON RESTART ####"
