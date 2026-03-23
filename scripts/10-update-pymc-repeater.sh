@@ -31,9 +31,6 @@ export PIP_ROOT_USER_ACTION=ignore
 echo "# Installing core"
 python3 -m pip install --break-system-packages .
 
-echo "Cleanup pyMC Core installation files"
-rm -rf $PYMC_CORE_DIR
-
 echo "# Clone pyMC Repeater"
 git clone --single-branch --branch $PYMC_REPO_BRANCH $PYMC_REPO_URL/pyMC_Repeater.git $PYMC_SCRIPT_DIR
 cd $PYMC_SCRIPT_DIR
@@ -87,3 +84,4 @@ systemctl start pymc-repeater
 
 echo "Clean up install files"
 rm -rf $PYMC_SCRIPT_DIR
+rm -rf $PYMC_CORE_DIR
