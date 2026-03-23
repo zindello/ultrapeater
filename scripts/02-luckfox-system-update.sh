@@ -39,12 +39,7 @@ luckfox-config uart_disable 4 1
 luckfox-config uart_disable 2 1
 
 echo "Enabling UART0 for shell and SPI"
-#luckfox-config uart_enable 0 1
 luckfox-config spi_enable
-
-#echo "Enable TTY on UART0"
-#echo 'stty -F /dev/ttyS0 115200 cs8 -cstopb -parenb' >> /etc/rc.local
-#systemctl enable serial-getty@ttyS0
 
 echo "Finally run an apt upgrade for any packages that need/want upgrading"
 apt upgrade -y --option Dpkg::Options::="--force-confold"
