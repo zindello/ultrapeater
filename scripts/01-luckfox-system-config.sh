@@ -158,7 +158,7 @@ cat <<EOF > /etc/fw_env.config
 /dev/mmcblk0p1  0x0  0x8000
 EOF
 echo "Configure bootargs to reduce CMA allocation to 1M (We don't need it)"
-fw_setenv sys_bootargs "`fw_printenv|grep 'sys_bootargs'|sed 's/rk_dma_heap_cma=..M/rk_dma_heap_cma=1M'|sed 's/sys_bootargs=//'`"
+fw_setenv sys_bootargs "`fw_printenv|grep 'sys_bootargs'|sed 's/rk_dma_heap_cma=..M/rk_dma_heap_cma=1M/'|sed 's/sys_bootargs=//'`"
 
 echo "Trim the logging time to 1d"
 journalctl --vacuum-time=1d
