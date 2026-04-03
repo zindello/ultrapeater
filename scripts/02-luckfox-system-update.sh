@@ -4,6 +4,10 @@ echo "Setting localtime to UTC..."
 rm /etc/localtime
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 
+echo "Setting hostname to ultrapeater..."
+echo "ultrapeater" > /etc/hostname
+echo "127.0.0.1 ultrapeater" >> /etc/hosts
+
 DEBIAN_FRONTEND=noninteractive
 
 echo "Update packages"

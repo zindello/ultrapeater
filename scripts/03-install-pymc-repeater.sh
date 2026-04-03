@@ -89,22 +89,20 @@ fi
 
 python3 -m pip install --break-system-packages --force-reinstall --no-cache-dir .
 
-echo "Setting hostname to ultrapeater..."
-echo "ultrapeater" > /etc/hostname
-
 echo "# Installing systemd service..."
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" /etc/systemd/system/
 systemctl daemon-reload
 
 # Configure polkit for passwordless service restart
-mkdir -p /etc/polkit-1/localauthority/50-local.d
-cat > /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla <<'EOF'
-[Allow repeater to restart pymc-repeater service]
-Identity=unix-user:repeater
-Action=org.freedesktop.systemd1.manage-units
-ResultAny=yes
-ResultInactive=yes
-ResultActive=yes
+mkdir -p /etc/polkit-1/rules.d/
+cat > /etc/polkit-1/rules.d/10-pymc-repeater.rules <<'EOF'
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.systemd1.manage-units" &&
+        action.lookup("unit") == "pymc-repeater.service" &&
+        subject.user == "repeater") {
+        return polkit.Result.YES;
+    }
+});
 EOF
 
 chmod 0644 /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla
