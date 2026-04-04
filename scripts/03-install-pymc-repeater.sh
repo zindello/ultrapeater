@@ -10,7 +10,7 @@ PYMC_SERVICE_USER="repeater"
 PYMC_SERVICE_NAME="pymc-repeater"
 PYMC_SERVICE_USER_HOME="/var/lib/pymc_repeater"
 PYMC_REPO_URL="https://github.com/rightup/pyMC_Repeater.git"        
-PYMC_REPO_BRANCH="feat/companion"
+PYMC_REPO_BRANCH="dev"
 PYMC_CONFIG_FILE="/etc/pymc_repeater/config.yaml"
 
 echo "# Creating service user..."
@@ -93,7 +93,7 @@ echo "# Installing systemd service..."
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" /etc/systemd/system/
 systemctl daemon-reload
 
-# Configure polkit for passwordless service restart
+echo "# Configure polkit for passwordless service restart..."
 mkdir -p /etc/polkit-1/rules.d/
 cat > /etc/polkit-1/rules.d/10-pymc-repeater.rules <<'EOF'
 polkit.addRule(function(action, subject) {
@@ -105,7 +105,15 @@ polkit.addRule(function(action, subject) {
 });
 EOF
 
-chmod 0644 /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla
+chmod 0644 /etc/polkit-1/rules.d/10-pymc-repeater.rules
+
+echo "# Configuring sudoers for service management..."
+mkdir -p /etc/sudoers.d
+cat > /etc/sudoers.d/pymc-repeater <<'EOF'
+# Allow repeater user to manage the pymc-repeater service without password
+repeater ALL=(root) NOPASSWD: /usr/bin/systemctl restart pymc-repeater, /usr/bin/systemctl stop pymc-repeater, /usr/bin/systemctl start pymc-repeater, /usr/bin/systemctl status pymc-repeater, /usr/local/bin/pymc-do-upgrade
+EOF
+chmod 0440 /etc/sudoers.d/pymc-repeater
 
 echo "Enable pyMC_Repeater start on boot"
 systemctl enable pymc-repeater
