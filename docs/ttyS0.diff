@@ -1,0 +1,59 @@
+diff --git a/sysdrv/source/kernel/arch/arm/boot/dts/rv1106.dtsi b/sysdrv/source/kernel/arch/arm/boot/dts/rv1106.dtsi
+index 40f0a1a6c..8abf88fa3 100644
+--- a/sysdrv/source/kernel/arch/arm/boot/dts/rv1106.dtsi
++++ b/sysdrv/source/kernel/arch/arm/boot/dts/rv1106.dtsi
+@@ -224,7 +224,7 @@ route_rgb: route-rgb {
+ 
+ 	fiq_debugger: fiq-debugger {
+ 		compatible = "rockchip,fiq-debugger";
+-		rockchip,serial-id = <2>;
++		rockchip,serial-id = <0>;
+ 		rockchip,wake-irq = <0>;
+ 		rockchip,irq-mode-enable = <0>;
+ 		rockchip,baudrate = <115200>;	/* Only 115200 and 1500000 */
+diff --git a/sysdrv/source/uboot/rkbin/bin/rv11/rv1106_ddr_924MHz_v1.15.bin b/sysdrv/source/uboot/rkbin/bin/rv11/rv1106_ddr_924MHz_v1.15.bin
+index 561ee6824..8695b00b3 100644
+Binary files a/sysdrv/source/uboot/rkbin/bin/rv11/rv1106_ddr_924MHz_v1.15.bin and b/sysdrv/source/uboot/rkbin/bin/rv11/rv1106_ddr_924MHz_v1.15.bin differ
+diff --git a/sysdrv/source/uboot/rkbin/tools/ddrbin_param.txt b/sysdrv/source/uboot/rkbin/tools/ddrbin_param.txt
+index 0dfdd3183..c000893da 100644
+--- a/sysdrv/source/uboot/rkbin/tools/ddrbin_param.txt
++++ b/sysdrv/source/uboot/rkbin/tools/ddrbin_param.txt
+@@ -9,9 +9,9 @@ lp4_freq=
+ lp4x_freq=
+ lp5_freq=
+ 
+-uart id=
+-uart iomux=
+-uart baudrate=
++uart id=0
++uart iomux=1
++uart baudrate=115200
+ 
+ sr_idle=
+ pd_idle=
+diff --git a/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106-u-boot.dtsi b/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106-u-boot.dtsi
+index 8821862db..3626491ff 100644
+--- a/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106-u-boot.dtsi
++++ b/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106-u-boot.dtsi
+@@ -11,7 +11,7 @@
+ 	};
+ 
+ 	chosen {
+-		stdout-path = &uart2;
++		stdout-path = &uart0;
+ 		u-boot,spl-boot-order = &sdmmc, &spi_nor, &spi_nand, &emmc;
+ 	};
+ 
+diff --git a/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106.dtsi b/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106.dtsi
+index 7a88bb13e..516f4825e 100644
+--- a/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106.dtsi
++++ b/sysdrv/source/uboot/u-boot/arch/arm/dts/rv1106.dtsi
+@@ -102,7 +102,7 @@
+ 
+ 	fiq_debugger: fiq-debugger {
+ 		compatible = "rockchip,fiq-debugger";
+-		rockchip,serial-id = <2>;
++		rockchip,serial-id = <0>;
+ 		rockchip,wake-irq = <0>;
+ 		rockchip,irq-mode-enable = <0>;
+ 		rockchip,baudrate = <1500000>;	/* Only 115200 and 1500000 */
