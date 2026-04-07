@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    return
+fi
+
 systemctl stop pymc-repeater
 
 PYMC_SCRIPT_DIR="/tmp/pymc_repeater_install"

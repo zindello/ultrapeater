@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 rm -f /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla || true
 
 # Configure polkit for passwordless service restart

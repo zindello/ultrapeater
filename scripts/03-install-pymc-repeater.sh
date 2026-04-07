@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 PYMC_SCRIPT_DIR="/tmp/pymc_repeater_install"

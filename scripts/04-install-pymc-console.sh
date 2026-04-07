@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 PYMC_C_TMP_FILE="/tmp/pymc-ui.tar.gz"
 PYMC_C_CONSOLE_DIR="/opt/pymc_console"
 PYMC_C_UI_DIR="$PYMC_C_CONSOLE_DIR/web/html"

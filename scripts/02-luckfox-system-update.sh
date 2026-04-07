@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 echo "Setting localtime to UTC..."
 rm /etc/localtime
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime

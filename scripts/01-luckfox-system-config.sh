@@ -1,7 +1,15 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 echo "Disable root user password"
 passwd -l root
+
+echo "Force user password change on next login"
+passwd --expire pico
 
 echo "Injecting the ability to manually enable/disable the things we need to in the luckfox-config script"
 sudo sed -i '/elif \[ -z "\$1" \]; then/i \
