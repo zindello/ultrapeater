@@ -51,7 +51,10 @@ Reboot the system.
 
 This script will run relatively quickly, with a short pause during the ssk key regeneration.
 
-### NOTE: The system's IP address WILL change at this point and you will have to get the new address out of the router.
+**NOTE:** that this step changes the default serial console port from UART2 to UART0. If you are using
+the serial console, you will need to change what port you're using after rebooting the device.
+
+**NOTE:** The system's IP address **WILL** change at this point and you will have to get the new address out of the router. 
 
 ### Script 2 02-luckfox-system-update.sh
 
