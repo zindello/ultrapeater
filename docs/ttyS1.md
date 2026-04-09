@@ -1,3 +1,5 @@
+# TTY S1 modifications
+
 To enable serial port access in U-Boot and the Linux kernel, source code
 modifications are required, as the default ttyS2 pins conflict with those
 used by the radio.
@@ -5,13 +7,13 @@ used by the radio.
 The U-Boot and Linux kernel images were built by cloning the [luckfox-pico](https://github.com/LuckfoxTECH/luckfox-pico)
 repository and following [these](https://forums.luckfox.com/viewtopic.php?t=975) instructions.
 
-Apply the [ttyS0.diff](ttyS0.diff) file to the luckfox-pico repository (e.g. `patch -p1 < ttyS0.patch`)
-to change the default serial port from ttyS2 to ttyS0, then run the
+Apply the [ttyS1.diff](ttyS1.diff) file to the luckfox-pico repository (e.g. `patch -p1 < ttyS1.patch`)
+to change the default serial port from ttyS2 to ttyS1, then run the
 `./build.sh uboot` and `./build.sh kernel` to generate the suitable images.
 
 
 In case the above link explaining what changes are required is no longer valid,
-here's a copy/paste of the appropriate entry that was followed:
+here's a copy/paste of the forum post that was followed:
 
 ```
 
@@ -117,3 +119,13 @@ Code: Select all
 };
 
 ```
+
+After performing these modifications, you can build a new u-boot image and kernel image with:
+
+```sh
+./build.sh clean
+./build.sh uboot
+./build.sh kernel
+```
+
+and the resulting images will be in the `output/image` directory
