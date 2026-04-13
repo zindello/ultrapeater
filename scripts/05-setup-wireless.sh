@@ -26,7 +26,7 @@ EOF
 
 systemctl restart systemd-networkd
 
-wifi_bt_init
+wifi_bt_init.sh
 
 sleep 2
 echo "Scanning for networks"
@@ -41,6 +41,6 @@ echo ""
 
 killall wpa_supplicant
 
-wifi_bt_init
+wifi_bt_init.sh
 
 networkctl reconfigure wlan0
