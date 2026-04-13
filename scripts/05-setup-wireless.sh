@@ -5,10 +5,10 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo "### ULTRAPEATER WIFI SETUP SCIPRT ###"
+echo "### ULTRAPEATER WIFI SETUP SCRIPT ###"
 
 echo "Installing Packages"
-apt install -y wpa_supplicant
+apt install -y wpasupplicant
 
 echo "Configure the networkd DHCP client for Wifi"
 networkfile="/etc/systemd/network/20-wireless.network"
@@ -24,6 +24,11 @@ IgnoreCarrierLoss=3s
 RouteMetric=100
 EOF
 
+systemctl restart systemd-networkd
+
+wifi_bt_init
+
+sleep 2
 echo "Scanning for networks"
 wpa_cli -i wlan0 scan
 sleep 5
@@ -32,5 +37,10 @@ wpa_cli -i wlan0 scan_results
 read -p "Enter your wifi network name (Case Sensitive): " network
 read -s -p "Enter your wifi network passphrase: " passphrase
 wpa_passphrase $network $passphrase > /etc/wpa_supplicant.conf
-wpa_supplicant -B -i wlan0 -c /etc/wpa_supplicant.conf
-systemctl enable wpa_supplicant@wlan0.service
+echo ""
+
+killall wpa_supplicant
+
+wifi_bt_init
+
+networkctl reconfigure wlan0
