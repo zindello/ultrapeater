@@ -68,6 +68,10 @@ sed -i "/^  gpio_chip:.*/a\\  use_gpiod_backend: true" "$PYMC_CONFIG_FILE"
 echo "# Copy in our BoardConfig so that you only get the options of our two variants"
 cp $SCRIPT_DIR/assets/ultrapeater-radio-settings.json $PYMC_SERVICE_USER_HOME/radio-settings.json
 
+echo "# Copy in our custom OTA update script"
+cp $SCRIPT_DIR/pymc-do-upgrade.sh /usr/local/bin/pymc-do-upgrade
+chmod +x /usr/local/bin/pymc-do-upgrade
+
 echo "# Setting permissions..."
 chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" "$PYMC_SERVICE_USER_HOME"
 chmod 750 "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" $PYMC_SERVICE_USER_HOME
@@ -98,17 +102,17 @@ echo "# Installing systemd service..."
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" /etc/systemd/system/
 systemctl daemon-reload
 
-echo "# Configure polkit for passwordless service restart..."
-mkdir -p /etc/polkit-1/rules.d/
-cat > /etc/polkit-1/rules.d/10-pymc-repeater.rules <<'EOF'
-polkit.addRule(function(action, subject) {
-    if (action.id == "org.freedesktop.systemd1.manage-units" &&
-        action.lookup("unit") == "pymc-repeater.service" &&
-        subject.user == "repeater") {
-        return polkit.Result.YES;
-    }
-});
+# Configure polkit for passwordless service restart
+mkdir -p /etc/polkit-1/localauthority/50-local.d
+cat > /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla <<'EOF'
+[Allow repeater to restart pymc-repeater service]
+Identity=unix-user:repeater
+Action=org.freedesktop.systemd1.manage-units
+ResultAny=yes
+ResultInactive=yes
+ResultActive=yes
 EOF
+chmod 0644 /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla
 
 chmod 0644 /etc/polkit-1/rules.d/10-pymc-repeater.rules
 
