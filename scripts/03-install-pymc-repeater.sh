@@ -15,7 +15,7 @@ PYMC_SERVICE_USER="repeater"
 PYMC_SERVICE_NAME="pymc-repeater"
 PYMC_SERVICE_USER_HOME="/var/lib/pymc_repeater"
 PYMC_REPO_URL="https://github.com/rightup/pyMC_Repeater.git"        
-PYMC_REPO_BRANCH="dev"
+PYMC_REPO_BRANCH="${1:-dev}"
 PYMC_CONFIG_FILE="/etc/pymc_repeater/config.yaml"
 
 echo "# Creating service user..."
