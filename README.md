@@ -77,13 +77,9 @@ This script will install pyMC_Repeater and setup the service.
 
 This script will take the longest to run - it's installing off of the Python dependencies and building all of the parts that are needed to support pyMC_Repeater - you might want to make a coffee while this one runs.  
 
-### DEPRECATED -- Script 4 04-install-pymc-console.sh
+### -- Script 4 04-install-pymc-console.sh
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/04-install-pymc-console.sh ```
-
-This script has now been deprecated. ONLY RUN IF YOU INSTALLED PRIOR TO 14/4/2026.  
-
-Run once to upgrade to a version that supports the web updater from the web UI and then use the UI to update. Ensure you ALSO run the 99-01-fix-polkit-and-ota-update.sh script AS WELL if your install predates 14/4/2026 so that the web updates work.   
 
 This script will install pyMC_Console (An alternative, more feature rich console, switchable via the UI).  
 
@@ -94,6 +90,17 @@ This script won't take long to run at all.
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/05-setup-wireless.sh ```
 
 This script will allow you to configure the wifi on a device with it supported. It will install wpa_supplicant, configure a DHCP client on the wlan0 interface, scan that interface for available networks and prompt you to enter an SSID and a Passphrase to connect to that network.
+
+## Update Scripts
+
+### DEPRECATED - 10-update-pymc-repeater.sh
+
+This script has now been deprecated. ONLY RUN IF YOU INSTALLED PRIOR TO 14/4/2026.  
+
+Run once to upgrade to a version that supports the web updater from the web UI and then use the UI to update. Ensure you ALSO run the 99-01-fix-polkit-and-ota-update.sh script AS WELL if your install predates 14/4/2026 so that the web updates work.
+
+### To update pymc-console simply run the 04-install-pymc-console.sh script again
+
 
 ## BUGFIX Scripts
 
