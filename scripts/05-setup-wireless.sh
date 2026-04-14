@@ -36,7 +36,7 @@ wpa_cli -i wlan0 scan_results
 
 read -p "Enter your wifi network name (Case Sensitive): " network
 read -s -p "Enter your wifi network passphrase: " passphrase
-wpa_passphrase $network $passphrase > /etc/wpa_supplicant.conf
+wpa_passphrase "$network" $passphrase > /etc/wpa_supplicant.conf
 echo ""
 
 killall wpa_supplicant
