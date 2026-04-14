@@ -1,8 +1,24 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 echo "Setting localtime to UTC..."
 rm /etc/localtime
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
+
+echo "Setting hostname to ultrapeater..."
+echo "ultrapeater" > /etc/hostname
+echo "127.0.0.1 ultrapeater" >> /etc/hosts
+
+echo "Disabling the UARTS we need for GPIO and enabling SPI"
+luckfox-config uart_disable 4 1
+luckfox-config uart_disable 2 1
+
+echo "Enabling UART0 for shell and SPI"
+luckfox-config spi_enable
 
 DEBIAN_FRONTEND=noninteractive
 
@@ -30,16 +46,6 @@ echo "chgrp gpio /dev/gpiochip*" >> /etc/rc.local
 echo "chmod 660 /dev/gpiochip*" >> /etc/rc.local
 echo "chgrp gpio /dev/spidev*" >> /etc/rc.local
 echo "chmod 660 /dev/spidev*" >> /etc/rc.local
-
-echo "Disable TTY on UART2"
-systemctl disable serial-getty@ttyFIQ0
-
-echo "Disabling the UARTS we need for GPIO and enabling SPI"
-luckfox-config uart_disable 4 1
-luckfox-config uart_disable 2 1
-
-echo "Enabling UART0 for shell and SPI"
-luckfox-config spi_enable
 
 echo "Finally run an apt upgrade for any packages that need/want upgrading"
 apt upgrade -y --option Dpkg::Options::="--force-confold"

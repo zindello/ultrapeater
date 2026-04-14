@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 PYMC_SCRIPT_DIR="/tmp/pymc_repeater_install"
@@ -10,7 +15,7 @@ PYMC_SERVICE_USER="repeater"
 PYMC_SERVICE_NAME="pymc-repeater"
 PYMC_SERVICE_USER_HOME="/var/lib/pymc_repeater"
 PYMC_REPO_URL="https://github.com/rightup/pyMC_Repeater.git"        
-PYMC_REPO_BRANCH="feat/companion"
+PYMC_REPO_BRANCH="${1:-dev}"
 PYMC_CONFIG_FILE="/etc/pymc_repeater/config.yaml"
 
 echo "# Creating service user..."
@@ -63,6 +68,10 @@ sed -i "/^  gpio_chip:.*/a\\  use_gpiod_backend: true" "$PYMC_CONFIG_FILE"
 echo "# Copy in our BoardConfig so that you only get the options of our two variants"
 cp $SCRIPT_DIR/assets/ultrapeater-radio-settings.json $PYMC_SERVICE_USER_HOME/radio-settings.json
 
+echo "# Copy in our custom OTA update script"
+cp $SCRIPT_DIR/assets/pymc-do-upgrade /usr/local/bin/pymc-do-upgrade
+chmod +x /usr/local/bin/pymc-do-upgrade
+
 echo "# Setting permissions..."
 chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" "$PYMC_SERVICE_USER_HOME"
 chmod 750 "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" $PYMC_SERVICE_USER_HOME
@@ -89,9 +98,6 @@ fi
 
 python3 -m pip install --break-system-packages --force-reinstall --no-cache-dir .
 
-echo "Setting hostname to ultrapeater..."
-echo "ultrapeater" > /etc/hostname
-
 echo "# Installing systemd service..."
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" /etc/systemd/system/
 systemctl daemon-reload
@@ -106,8 +112,15 @@ ResultAny=yes
 ResultInactive=yes
 ResultActive=yes
 EOF
-
 chmod 0644 /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla
+
+echo "# Configuring sudoers for service management..."
+mkdir -p /etc/sudoers.d
+cat > /etc/sudoers.d/pymc-repeater <<'EOF'
+# Allow repeater user to manage the pymc-repeater service without password
+repeater ALL=(root) NOPASSWD: /usr/bin/systemctl restart pymc-repeater, /usr/bin/systemctl stop pymc-repeater, /usr/bin/systemctl start pymc-repeater, /usr/bin/systemctl status pymc-repeater, /usr/local/bin/pymc-do-upgrade
+EOF
+chmod 0440 /etc/sudoers.d/pymc-repeater
 
 echo "Enable pyMC_Repeater start on boot"
 systemctl enable pymc-repeater

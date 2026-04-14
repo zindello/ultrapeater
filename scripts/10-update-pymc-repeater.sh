@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    return
+fi
+
 systemctl stop pymc-repeater
 
 PYMC_SCRIPT_DIR="/tmp/pymc_repeater_install"
@@ -11,8 +16,8 @@ PYMC_SERVICE_USER="repeater"
 PYMC_SERVICE_NAME="pymc-repeater"
 PYMC_SERVICE_USER_HOME="/var/lib/pymc_repeater"
 PYMC_REPO_URL="https://github.com/rightup"        
-PYMC_REPO_BRANCH="feat/companion"
-PYMC_CORE_REPO_BRANCH="feat/companion"
+PYMC_REPO_BRANCH="${1:-dev}"
+PYMC_CORE_REPO_BRANCH="${1:-dev}"
 
 echo "# Cleaning old pyMC Repeater installation files..."
 # Remove old repeater directory to ensure clean install
@@ -52,7 +57,7 @@ cp "$PYMC_SCRIPT_DIR/README.md" "$PYMC_INSTALL_DIR/"
 cp "$PYMC_SCRIPT_DIR/manage.sh" "$PYMC_INSTALL_DIR/" 2>/dev/null || true
 cp "$PYMC_SCRIPT_DIR/pymc-repeater.service" "$PYMC_INSTALL_DIR/" 2>/dev/null || true
 cp "$PYMC_SCRIPT_DIR/radio-settings.json" $PYMC_SERVICE_USER_HOME/ 2>/dev/null || true
-cp "$PYMC_SCRIPT_DIR/radio-presets.json" $PYMC_SERVICE_USER_HOME/ 2>/dev/null || true
+cp "$PYMC_SCRIPT_DIR/radio-presets.json" $PYMC_SERVICE_USER_HOME/ 2>/dev/null || truezx
 
 echo "# Setting permissions..."
 chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" "$PYMC_INSTALL_DIR" "$PYMC_CONFIG_DIR" "$PYMC_LOG_DIR" $PYMC_SERVICE_USER_HOME
@@ -64,7 +69,6 @@ mkdir -p $PYMC_SERVICE_USER_HOME/.config/pymc_repeater
 chown -R "$PYMC_SERVICE_USER:$PYMC_SERVICE_USER" $PYMC_SERVICE_USER_HOME/.config
 
 echo "# Installing dependencies and pyMC_Repeater"
-
 cd "$PYMC_SCRIPT_DIR"
 # Suppress pip root user warnings
 export PIP_ROOT_USER_ACTION=ignore

@@ -57,7 +57,9 @@ This script will run relatively quickly, with a short pause during the ssk key r
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/02-luckfox-system-update.sh ```
 
-This script will:  
+This script will: 
+Prompt you to change the password for the "pico" user, then boot you out.  
+On second run:  
 Update the apt caches.  
 Update the system with the latest packages.  
 Upgrade python to 3.10.  
@@ -75,13 +77,29 @@ This script will install pyMC_Repeater and setup the service.
 
 This script will take the longest to run - it's installing off of the Python dependencies and building all of the parts that are needed to support pyMC_Repeater - you might want to make a coffee while this one runs.  
 
-### Script 3 04-install-pymc-console.sh
+### DEPRECATED -- Script 4 04-install-pymc-console.sh
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/04-install-pymc-console.sh ```
 
-This script will install pyMC_Console (An alternative, more feature rich console, switchable via the UI)
+This script has now been deprecated. ONLY RUN IF YOU INSTALLED PRIOR TO 14/4/2026.  
+
+Run once to upgrade to a version that supports the web updater from the web UI and then use the UI to update. Ensure you ALSO run the 99-01-fix-polkit-and-ota-update.sh script AS WELL if your install predates 14/4/2026 so that the web updates work.   
+
+This script will install pyMC_Console (An alternative, more feature rich console, switchable via the UI).  
 
 This script won't take long to run at all.  
+
+### WIFI Config 05-setup-wireless.sh
+
+``` pico@luckfox:~$ sudo bash ultrapeater/scripts/05-setup-wireless.sh ```
+
+This script will allow you to configure the wifi on a device with it supported. It will install wpa_supplicant, configure a DHCP client on the wlan0 interface, scan that interface for available networks and prompt you to enter an SSID and a Passphrase to connect to that network.
+
+## BUGFIX Scripts
+
+### Polkit and Web Upgrade fix - 99-01-fix-polkit-and-ota-update.sh
+
+This script fixes the service not restarting properly from the web UI, and also fixes the issue of OTA updates not working. Run this script to allow upgrading of pyMC Repeater from the web UI.
 
 ## Login
 

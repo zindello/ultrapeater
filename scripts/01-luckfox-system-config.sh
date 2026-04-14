@@ -1,7 +1,15 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+    show_error "Installation requires root privileges.\n\nPlease run: sudo $0"
+    exit 1
+fi
+
 echo "Disable root user password"
 passwd -l root
+
+echo "Force user password change on next login"
+passwd --expire pico
 
 echo "Injecting the ability to manually enable/disable the things we need to in the luckfox-config script"
 sudo sed -i '/elif \[ -z "\$1" \]; then/i \
@@ -148,8 +156,11 @@ rm /oem/usr/ko/insmod_ko.sh
 echo "Disable the rgb switcher starting in rc.local"
 sed -i 's/\/usr\/bin\/luckfox_switch_rgb_resolution/#\/usr\/bin\/luckfox_switch_rgb_resolution/' /etc/rc.local
 
-echo "Disable the wifi/bt script - we won't be using them"
-sed -i 's/wifibt_init &/#wifibt_init &/' /etc/rc.local
+
+if [ "$(cat /proc/device-tree/model)" != "Luckfox Pico Ultra W" ]; then
+    echo "Disable the wifi/bt script - we won't be using them"
+    sed -i 's/wifibt_init/#wifibt_init/' /etc/rc.local
+fi
 
 echo "Install u-boot-tools and configure fw_env.config"
 apt install -y u-boot-tools
@@ -157,6 +168,7 @@ echo "Creating fw_env.config (Luckfox standard env partition)"
 cat <<EOF > /etc/fw_env.config
 /dev/mmcblk0p1  0x0  0x8000
 EOF
+
 echo "Configure bootargs to reduce CMA allocation to 1M (We don't need it)"
 fw_setenv sys_bootargs "`fw_printenv|grep 'sys_bootargs'|sed 's/rk_dma_heap_cma=..M/rk_dma_heap_cma=1M/'|sed 's/sys_bootargs=//'`"
 
