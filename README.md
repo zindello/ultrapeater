@@ -81,7 +81,9 @@ This script will take the longest to run - it's installing off of the Python dep
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/04-install-pymc-console.sh ```
 
-This script has now been deprecated. Run once to upgrade to a version that supports the web updater from the web UI and then use the UI to update. Ensure you ALSO run the 99-01-fix-polkit-and-ota-update.sh script AS WELL if your install predates 14/4/2026 so that the web updates work.   
+This script has now been deprecated. ONLY RUN IF YOU INSTALLED PRIOR TO 14/4/2026.  
+
+Run once to upgrade to a version that supports the web updater from the web UI and then use the UI to update. Ensure you ALSO run the 99-01-fix-polkit-and-ota-update.sh script AS WELL if your install predates 14/4/2026 so that the web updates work.   
 
 This script will install pyMC_Console (An alternative, more feature rich console, switchable via the UI).  
 
