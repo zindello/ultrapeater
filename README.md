@@ -57,7 +57,9 @@ This script will run relatively quickly, with a short pause during the ssk key r
 
 ``` pico@luckfox:~$ sudo bash ultrapeater/scripts/02-luckfox-system-update.sh ```
 
-This script will:  
+This script will: 
+Prompt you to change the password for the "pico" user, then boot you out.  
+On second run:  
 Update the apt caches.  
 Update the system with the latest packages.  
 Upgrade python to 3.10.  
