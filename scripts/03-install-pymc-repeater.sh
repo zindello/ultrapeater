@@ -69,7 +69,7 @@ echo "# Copy in our BoardConfig so that you only get the options of our two vari
 cp $SCRIPT_DIR/assets/ultrapeater-radio-settings.json $PYMC_SERVICE_USER_HOME/radio-settings.json
 
 echo "# Copy in our custom OTA update script"
-cp $SCRIPT_DIR/pymc-do-upgrade.sh /usr/local/bin/pymc-do-upgrade
+cp $SCRIPT_DIR/assets/pymc-do-upgrade /usr/local/bin/pymc-do-upgrade
 chmod +x /usr/local/bin/pymc-do-upgrade
 
 echo "# Setting permissions..."
@@ -113,8 +113,6 @@ ResultInactive=yes
 ResultActive=yes
 EOF
 chmod 0644 /etc/polkit-1/localauthority/50-local.d/10-pymc-repeater.pkla
-
-chmod 0644 /etc/polkit-1/rules.d/10-pymc-repeater.rules
 
 echo "# Configuring sudoers for service management..."
 mkdir -p /etc/sudoers.d
