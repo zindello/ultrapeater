@@ -5,6 +5,8 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 echo "# Configuring sudoers for service management..."
 mkdir -p /etc/sudoers.d
 cat > /etc/sudoers.d/pymc-repeater <<'EOF'
