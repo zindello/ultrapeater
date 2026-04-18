@@ -14,6 +14,6 @@ PYMC_REPO_BRANCH="${2:-dev}"
 git clone --single-branch --branch $PYMC_REPO_BRANCH $PYMC_REPO_URL $PYMC_SCRIPT_DIR
 
 cd $PYMC_SCRIPT_DIR
-./manage.sh update
+./manage.sh upgrade
 
 rm -rf $PYMC_SCRIPT_DIR
