@@ -7,6 +7,8 @@ fi
 
 echo "### ULTRAPEATER WIFI SETUP SCRIPT ###"
 
+killall wpa_supplicant || true
+
 echo "Installing Packages"
 apt install -y wpasupplicant
 

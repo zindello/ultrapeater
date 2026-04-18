@@ -38,7 +38,6 @@ echo "tmpfs /run tmpfs rw,nodev,nosuid,size=32M 0 0" | tee -a /etc/fstab
 
 echo "Regenerating SSH keys"
 rm /etc/ssh/ssh_host_*
-ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
 ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ""
 chmod 600 /etc/ssh/ssh_host_*_key
 chmod 644 /etc/ssh/ssh_host_*_key.pub
