@@ -5,6 +5,22 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+echo "Replacing u-boot and kernel with version that has serial console on UART0"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+echo "  Updating idblock partition - mmcblk0p2"
+dd if=$SCRIPT_DIR/assets/ttyS1/idblock.img of=/dev/mmcblk0p2
+
+echo "  Updating uboot partition - mmcblk0p3"
+dd if=$SCRIPT_DIR/assets/ttyS1/uboot.img of=/dev/mmcblk0p3
+
+echo "  Updating Linux kernel partition - mmcblk0p4"
+dd if=$SCRIPT_DIR/assets/ttyS1/boot.img of=/dev/mmcblk0p4
+
+# The sync is more so out of habit than anything else, but
+# better to be safe than sorry.
+sync
+
 echo "Disable root user password"
 passwd -l root
 
@@ -59,7 +75,6 @@ systemctl disable --now sound.target
 systemctl disable --now systemd-pstore.service
 systemctl disable --now veritysetup.target
 systemctl disable --now vsftpd.service
-systemctl disable --now serial-getty@ttyFIQ0
 
 echo "Prepare the switch to networkd"
 networkfile="/etc/systemd/network/10-wired.network"
