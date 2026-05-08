@@ -14,11 +14,11 @@ echo "ultrapeater" > /etc/hostname
 echo "127.0.0.1 ultrapeater" >> /etc/hosts
 
 echo "Disabling the UARTS we need for GPIO and enabling SPI"
-luckfox-config uart_disable 4 1
-luckfox-config uart_disable 2 1
+bash luckfox-config uart_disable 4 1
+bash luckfox-config uart_disable 2 1
 
 echo "Enabling UART0 for shell and SPI"
-luckfox-config spi_enable
+bash luckfox-config spi_enable
 
 DEBIAN_FRONTEND=noninteractive
 

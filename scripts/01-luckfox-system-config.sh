@@ -24,13 +24,15 @@ elif [ "$1" == "spi_enable" ]; then\
     luckfox_spi_app 1 0 0 1 1 1000000\
     echo "SPI Enabled - Reboot for changes to take effect"\
 elif [ "$1" == "uart_disable" ]; then\
+    luckfox_config_init\
     luckfox_uart_app 0 $2 $3\
 elif [ "$1" == "uart_enable" ]; then\
+    luckfox_config_init\
     luckfox_uart_app 1 $2 $3\
 ' /usr/bin/luckfox-config
 
 echo "Disabling RGB"
-luckfox-config rgb_disable
+bash luckfox-config rgb_disable
 
 echo "Increase the size of the tmpfs"
 mount -o remount,size=32M /run
