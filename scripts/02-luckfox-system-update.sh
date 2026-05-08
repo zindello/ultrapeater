@@ -22,9 +22,6 @@ bash luckfox-config spi_enable
 
 DEBIAN_FRONTEND=noninteractive
 
-echo "Update packages"
-apt upgrade -y --option Dpkg::Options::="--force-confold"
-
 echo "Installing packages"
 apt install -y --option Dpkg::Options::="--force-confold" locales git libyaml-cpp-dev libbluetooth-dev openssl libssl-dev libulfius-dev fonts-noto-color-emoji ninja-build chrony software-properties-common python-is-python3 python3.10-venv lsof spi-tools vim mtd-utils jq rsync libffi-dev jq python3-pip python3-rrdtool python3.10-venv wget swig build-essential python3-dev
 if [[ $? -eq 2 ]]; then echo "Error, step failed..."; fi
@@ -47,7 +44,7 @@ echo "chmod 660 /dev/gpiochip*" >> /etc/rc.local
 echo "chgrp gpio /dev/spidev*" >> /etc/rc.local
 echo "chmod 660 /dev/spidev*" >> /etc/rc.local
 
-echo "Finally run an apt upgrade for any packages that need/want upgrading"
-apt upgrade -y --option Dpkg::Options::="--force-confold"
+#echo "Finally run an apt upgrade for any packages that need/want upgrading"
+#apt upgrade -y --option Dpkg::Options::="--force-confold"
 
 reboot

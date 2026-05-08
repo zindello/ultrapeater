@@ -25,9 +25,11 @@ elif [ "$1" == "spi_enable" ]; then\
     echo "SPI Enabled - Reboot for changes to take effect"\
 elif [ "$1" == "uart_disable" ]; then\
     luckfox_config_init\
+    LF_GUI_ENABLE=0\
     luckfox_uart_app 0 $2 $3\
 elif [ "$1" == "uart_enable" ]; then\
     luckfox_config_init\
+    LF_GUI_ENABLE=0\
     luckfox_uart_app 1 $2 $3\
 ' /usr/bin/luckfox-config
 
