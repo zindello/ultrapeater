@@ -14,19 +14,16 @@ echo "ultrapeater" > /etc/hostname
 echo "127.0.0.1 ultrapeater" >> /etc/hosts
 
 echo "Disabling the UARTS we need for GPIO and enabling SPI"
-luckfox-config uart_disable 4 1
-luckfox-config uart_disable 2 1
+bash luckfox-config uart_disable 4 1
+bash luckfox-config uart_disable 2 1
 
 echo "Enabling UART0 for shell and SPI"
-luckfox-config spi_enable
+bash luckfox-config spi_enable
 
 DEBIAN_FRONTEND=noninteractive
 
-echo "Update packages"
-apt upgrade -y --option Dpkg::Options::="--force-confold"
-
 echo "Installing packages"
-apt install -y --option Dpkg::Options::="--force-confold" locales git libyaml-cpp-dev libbluetooth-dev openssl libssl-dev libulfius-dev fonts-noto-color-emoji ninja-build chrony software-properties-common python-is-python3 python3.10-venv lsof spi-tools vim mtd-utils jq rsync libffi-dev jq python3-pip python3-rrdtool python3.10-venv wget swig build-essential python3-dev
+apt install -y --option Dpkg::Options::="--force-confold" locales git libyaml-cpp-dev openssl libssl-dev libulfius-dev fonts-noto-color-emoji ninja-build chrony software-properties-common python-is-python3 python3.10-venv lsof spi-tools vim mtd-utils jq rsync libffi-dev jq python3-pip python3-rrdtool python3.10-venv wget swig build-essential python3-dev
 if [[ $? -eq 2 ]]; then echo "Error, step failed..."; fi
 
 echo "Upgrade pip to latest available version"

@@ -24,13 +24,17 @@ elif [ "$1" == "spi_enable" ]; then\
     luckfox_spi_app 1 0 0 1 1 1000000\
     echo "SPI Enabled - Reboot for changes to take effect"\
 elif [ "$1" == "uart_disable" ]; then\
+    luckfox_config_init\
+    LF_GUI_ENABLE=0\
     luckfox_uart_app 0 $2 $3\
 elif [ "$1" == "uart_enable" ]; then\
+    luckfox_config_init\
+    LF_GUI_ENABLE=0\
     luckfox_uart_app 1 $2 $3\
 ' /usr/bin/luckfox-config
 
 echo "Disabling RGB"
-luckfox-config rgb_disable
+bash luckfox-config rgb_disable
 
 echo "Increase the size of the tmpfs"
 mount -o remount,size=32M /run
@@ -158,7 +162,7 @@ sed -i 's/\/usr\/bin\/luckfox_switch_rgb_resolution/#\/usr\/bin\/luckfox_switch_
 
 if [ "$(cat /proc/device-tree/model)" != "Luckfox Pico Ultra W" ]; then
     echo "Disable the wifi/bt script - we won't be using them"
-    sed -i 's/wifibt_init/#wifibt_init/' /etc/rc.local
+    sed -i 's/wifibt_init \&/#wifibt_init \&/' /etc/rc.local
 fi
 
 echo "Install u-boot-tools and configure fw_env.config"
