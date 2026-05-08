@@ -162,7 +162,7 @@ sed -i 's/\/usr\/bin\/luckfox_switch_rgb_resolution/#\/usr\/bin\/luckfox_switch_
 
 if [ "$(cat /proc/device-tree/model)" != "Luckfox Pico Ultra W" ]; then
     echo "Disable the wifi/bt script - we won't be using them"
-    sed -i 's/wifibt_init/#wifibt_init/' /etc/rc.local
+    sed -i 's/wifibt_init \&/#wifibt_init \&/' /etc/rc.local
 fi
 
 echo "Install u-boot-tools and configure fw_env.config"
