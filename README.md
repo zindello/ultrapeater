@@ -127,7 +127,7 @@ This script will take a little longer to run as it updates all out-of-date packa
 ### Script 3 — Install pyMC Repeater
 
 ```bash
-sudo bash ultrapeater/scripts/03-install-pymc-repeater.sh
+sudo bash ultrapeater/scripts/03-install-openhop-repeater.sh
 ```
 
 This script installs pyMC_Repeater and sets up the service.
@@ -176,7 +176,7 @@ You should see the UltraPeater web interface, where you can configure and monito
 
 Updates can be performed directly from the web UI.
 
-> ⚠️ **DEPRECATED — 10-update-pymc-repeater.sh**
+> ⚠️ **DEPRECATED — 10-update-openhop-repeater.sh**
 > This script has been deprecated. Only run it if you installed prior to 14/4/2026. Run it once to upgrade to a version that supports the web updater, then use the UI to update going forward.
 
 ### pyMC Console
