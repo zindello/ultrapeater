@@ -170,6 +170,36 @@ You should see the UltraPeater web interface, where you can configure and monito
 
 ---
 
+## Migrating an Existing Repeater (Keep Your Private Key)
+
+If you are moving an existing MeshCore repeater to the UltraPeater and want to keep its identity (the same node address), you can import its private key with the converter script from the repeater project's `dev` branch. Do this after the setup scripts have completed.
+
+1. SSH into your device:
+   ```bash
+   ssh pico@<ip-address>
+   ```
+2. Change to a temporary directory:
+   ```bash
+   cd /tmp
+   ```
+3. Download the script:
+   ```bash
+   curl -L -o convert_firmware_key.sh https://raw.githubusercontent.com/openhop-dev/openhop_repeater/dev/convert_firmware_key.sh
+   ```
+4. Make it executable:
+   ```bash
+   chmod +x convert_firmware_key.sh
+   ```
+5. *Optional, but recommended:* back up your existing configuration, either from the web UI or in the terminal.
+6. Run the script with the private key from your old device (128 hex characters):
+   ```bash
+   sudo /tmp/convert_firmware_key.sh YOUR_128_HEX_KEY
+   ```
+
+The script updates the repeater's config file and asks whether you want to restart the service. Once it restarts, the UltraPeater uses your old repeater's identity.
+
+---
+
 ## Updating
 
 ### pyMC Repeater
